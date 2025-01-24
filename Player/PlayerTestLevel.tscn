@@ -30,7 +30,6 @@ shape = SubResource("BoxShape3D_aepwc")
 
 [node name="Player" parent="." instance=ExtResource("1_nbu68")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81425, 1)
-_rotationVLimit = 5.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.384795, 0.923002, 0, -0.923002, 0.384795, 0, 0, 0)

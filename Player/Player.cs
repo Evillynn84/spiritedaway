@@ -8,7 +8,10 @@ public partial class Player : CharacterBody3D
 	public float _bubbleSpeed = 5.0f;
 	[Export]
 	public float _outSpeed = 3.0f;
-	public const float JumpVelocity = 4.5f;
+	[Export]
+	public float _bubbleJumpVelocity = 10f;
+	[Export]
+	public float _outJumpVelocity = 4.5f;
 
 	// Rotation
 	[Export]
@@ -57,9 +60,13 @@ public partial class Player : CharacterBody3D
 		}
 
 		// Handle Jump.
+		float jumpVelocity = _bubbleJumpVelocity;
+		if (_controlledBubble == null)
+			jumpVelocity = _outJumpVelocity;
+
 		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
 		{
-			velocity.Y = JumpVelocity;
+			velocity.Y = jumpVelocity;
 		}
 
 		// Get the input direction and handle the movement/deceleration.
@@ -95,21 +102,20 @@ public partial class Player : CharacterBody3D
 		{
 			// Horizontal player rotation
 			RotateY(Mathf.DegToRad(-mouseEvent.Relative.X * _mouseSensitiviy));
-			_cameraHolder.RotateX(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitiviy));
 
+			float xRot = Mathf.Clamp(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitiviy), -_mouseSensitiviy, _mouseSensitiviy);
+			//_cameraHolder.RotateX(xRot);
 
-			/*
 			// Vertical camera rotation
 			float changeV = -mouseEvent.Relative.Y * _mouseSensitiviy;
-			float rotationVUpdated = _cameraRotationV + changeV;
+			float rotationVUpdated = Mathf.RadToDeg(_cameraHolder.Rotation.X) + changeV;
 
 			// Check vertical limit
 			if (rotationVUpdated > -_rotationVLimit && rotationVUpdated < _rotationVLimit)
 			{
-				_cameraRotationV = rotationVUpdated; 
-				_cameraHolder.RotateX(Mathf.DegToRad(_cameraRotationV));
+				_cameraRotationV = _cameraRotationV + changeV; 
+				_cameraHolder.RotateX(Mathf.DegToRad(changeV));
 			}
-			*/
 		}
 	}
 

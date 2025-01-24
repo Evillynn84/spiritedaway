@@ -8,7 +8,9 @@
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_cameraHolder")]
 script = ExtResource("1_3xaqb")
-_rotationVLimit = 25.0
+_bubbleSpeed = 6.0
+_outSpeed = 2.0
+_rotationVLimit = 20.0
 _cameraHolder = NodePath("CameraHolder")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
