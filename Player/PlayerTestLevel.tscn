@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bfjrvu35ypljc"]
+[gd_scene load_steps=5 format=3 uid="uid://bfjrvu35ypljc"]
 
 [ext_resource type="PackedScene" uid="uid://lrhm5qe4pd44" path="res://Player/Player.tscn" id="1_nbu68"]
+[ext_resource type="PackedScene" uid="uid://rnscx2wflgbn" path="res://Player/PlayerBubble.tscn" id="2_nyprr"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_34hwk"]
 
@@ -9,6 +10,9 @@ size = Vector3(4.76465, 1, 4.87427)
 
 [node name="Node3D" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81425, 0)
+
+[node name="PlayerBubble" parent="." instance=ExtResource("2_nyprr")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 1.85245, -1.13282, -3.3509)
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 5, 0, -1.63282, 0)

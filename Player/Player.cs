@@ -3,9 +3,14 @@ using System;
 
 public partial class Player : CharacterBody3D
 {
-	public const float Speed = 5.0f;
+	// Movement
+	[Export]
+	public float _bubbleSpeed = 5.0f;
+	[Export]
+	public float _outSpeed = 3.0f;
 	public const float JumpVelocity = 4.5f;
 
+	// Rotation
 	[Export]
 	public float _mouseSensitiviy = 0.5f;
 	[Export]
@@ -15,8 +20,34 @@ public partial class Player : CharacterBody3D
 
 	public float _cameraRotationV = 0;
 
-	public override void _PhysicsProcess(double delta)
+	// Bubble
+	[Export]
+	public PlayerBubble _controlledBubble;
+
+	public PlayerBubble _collidingBubble;
+
+    //--------------------------------------------------
+    // Overrides
+    //--------------------------------------------------
+
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+
+		// Enter bubble
+		if (Input.IsActionJustPressed("pl_enterBubble"))
+		{
+			if (_controlledBubble == null)
+				ControlBubble(_collidingBubble);
+			else
+				LeaveBubble();
+		}
+    }
+
+    public override void _PhysicsProcess(double delta)
 	{
+		ControlBubble(_controlledBubble);
+
 		Vector3 velocity = Velocity;
 
 		// Add the gravity.
@@ -35,19 +66,21 @@ public partial class Player : CharacterBody3D
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector("pl_left", "pl_right", "pl_front", "pl_back");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+
+		float curSpeed = _bubbleSpeed;
+		if (_controlledBubble == null)
+			curSpeed = _outSpeed;
+
 		if (direction != Vector3.Zero)
 		{
-			velocity.X = direction.X * Speed;
-			velocity.Z = direction.Z * Speed;
+			velocity.X = direction.X * curSpeed;
+			velocity.Z = direction.Z * curSpeed;
 		}
 		else
 		{
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
+			velocity.X = Mathf.MoveToward(Velocity.X, 0, curSpeed);
+			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, curSpeed);
 		}
-
-
-		// Rotate 
 
 		Velocity = velocity;
 		MoveAndSlide();
@@ -77,4 +110,32 @@ public partial class Player : CharacterBody3D
 			*/
 		}
     }
+
+	//--------------------------------------------------
+	// Methods
+	//--------------------------------------------------
+
+	public void SetCollidingBubble(PlayerBubble bubble)
+	{
+		_collidingBubble = bubble;
+	}
+
+	public void ControlBubble(PlayerBubble bubble)
+	{
+		if (bubble == null)
+			return;
+
+		bubble.Reparent(this);
+		bubble.Position = Vector3.Zero;
+
+		_controlledBubble = bubble;
+	}
+
+	public void LeaveBubble()
+	{
+
+		_controlledBubble.Reparent(GetTree().Root);
+		//_controlledBubble.Position = Position;
+		_controlledBubble = null;
+	}
 }
