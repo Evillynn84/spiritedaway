@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfjrvu35ypljc"]
+
+[ext_resource type="PackedScene" uid="uid://lrhm5qe4pd44" path="res://Player/Player.tscn" id="1_nbu68"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_34hwk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aepwc"]
+size = Vector3(4.76465, 1, 4.87427)
+
+[node name="Node3D" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81425, 0)
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 5, 0, -1.63282, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/StaticBody3D"]
+transform = Transform3D(5, 0, 0, 0, 0.2, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("BoxMesh_34hwk")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Node3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0610351, 0, 0.0177002)
+shape = SubResource("BoxShape3D_aepwc")
+
+[node name="Player" parent="." instance=ExtResource("1_nbu68")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.81425, 1)
+_rotationVLimit = 5.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.384795, 0.923002, 0, -0.923002, 0.384795, 0, 0, 0)
