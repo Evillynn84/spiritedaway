@@ -26,13 +26,13 @@ public partial class Player : CharacterBody3D
 
 	public PlayerBubble _collidingBubble;
 
-    //--------------------------------------------------
-    // Overrides
-    //--------------------------------------------------
+	//--------------------------------------------------
+	// Overrides
+	//--------------------------------------------------
 
-    public override void _Process(double delta)
-    {
-        base._Process(delta);
+	public override void _Process(double delta)
+	{
+		base._Process(delta);
 
 		// Enter bubble
 		if (Input.IsActionJustPressed("pl_enterBubble"))
@@ -42,9 +42,9 @@ public partial class Player : CharacterBody3D
 			else
 				LeaveBubble();
 		}
-    }
+	}
 
-    public override void _PhysicsProcess(double delta)
+	public override void _PhysicsProcess(double delta)
 	{
 		ControlBubble(_controlledBubble);
 
@@ -87,7 +87,7 @@ public partial class Player : CharacterBody3D
 	}
 
 	public override void _Input(InputEvent @event)
-    {
+	{
 		// Handle mouse rotation
 		InputEventMouseMotion mouseEvent = (InputEventMouseMotion)@event;
 
@@ -95,6 +95,8 @@ public partial class Player : CharacterBody3D
 		{
 			// Horizontal player rotation
 			RotateY(Mathf.DegToRad(-mouseEvent.Relative.X * _mouseSensitiviy));
+			_cameraHolder.RotateX(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitiviy));
+
 
 			/*
 			// Vertical camera rotation
@@ -109,7 +111,7 @@ public partial class Player : CharacterBody3D
 			}
 			*/
 		}
-    }
+	}
 
 	//--------------------------------------------------
 	// Methods
