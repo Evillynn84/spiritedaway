@@ -6,10 +6,18 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_4w3hv"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_cameraHolder")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_cameraHolder", "_camera", "_cameraRayCast")]
 script = ExtResource("1_3xaqb")
-_rotationVLimit = 25.0
+_bubbleSpeed = 8.0
+_outSpeed = 4.0
+_bubbleJumpVelocity = 12.0
+_outJumpVelocity = 8.0
+_jumpGravityModified = 2.0
+_fallGravityModified = 5.0
+_rotationVLimit = 20.0
 _cameraHolder = NodePath("CameraHolder")
+_camera = NodePath("CameraHolder/Camera3D")
+_cameraRayCast = NodePath("CameraHolder/RayCast3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("CapsuleMesh_6soud")
@@ -20,4 +28,7 @@ shape = SubResource("CapsuleShape3D_4w3hv")
 [node name="CameraHolder" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="CameraHolder"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.627389, 3.75784)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 3.63695, 3.75784)
+
+[node name="RayCast3D" type="RayCast3D" parent="CameraHolder"]
+target_position = Vector3(0, 4, 4)

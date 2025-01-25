@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://ceyyg147x0f2h"]
+
+[ext_resource type="Shader" path="res://resources/Shaders/Triplanar_Shader_DetailBlend.gdshader" id="1_nrpor"]
+[ext_resource type="Texture2D" uid="uid://t8q0tobukjqa" path="res://resources/Textures/Quarry Slate Detail Rock Stained 01_xbknedb/Albedo_2K__xbknedb.jpg" id="2_hl2d1"]
+[ext_resource type="Texture2D" uid="uid://d12rn365e8xbh" path="res://resources/Textures/Quarry Slate Detail Rock Stained 01_xbknedb/Normal_2K__xbknedb.jpg" id="3_r1usa"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_nrpor")
+shader_parameter/base_blend_normal_scale = 0.7
+shader_parameter/roughness = 1.0
+shader_parameter/metal = 0.0
+shader_parameter/ao_light_effect = null
+shader_parameter/tri_blend_factor = 5.0
+shader_parameter/base_and_secondary_maps_blend = 1.0
+shader_parameter/blend_softness = 0.25
+shader_parameter/invert_mask = false
+shader_parameter/use_xz_mask = false
+shader_parameter/use_additional_mask_texture = false
+shader_parameter/uv_base_offset = Vector3(0, 0, 0)
+shader_parameter/uv_blend_offset = Vector3(0, 0, 0)
+shader_parameter/uv_additional_mask_scale = Vector3(1, 1, 1)
+shader_parameter/albedo = ExtResource("2_hl2d1")
+shader_parameter/normal = ExtResource("3_r1usa")
+shader_parameter/use_UV_map = false
+shader_parameter/use_detail_normal = false
+shader_parameter/uv_detail_scale = Vector3(1, 1, 1)
+shader_parameter/detail_normal_scale = 0.5
+shader_parameter/uv_detail_offset = Vector3(0, 0, 0)
