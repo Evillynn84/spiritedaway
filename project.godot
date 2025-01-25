@@ -23,6 +23,10 @@ GameState="*res://Systems/GameState.tscn"
 
 project/assembly_name="test"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/material_viewer/plugin.cfg")
+
 [input]
 
 pl_front={
