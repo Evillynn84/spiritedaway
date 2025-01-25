@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://krkq5r77jape"]
+
+[resource]
+resource_name = "M_Cave"
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.722027, 0.722027, 0.722027, 1)
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 0.0
