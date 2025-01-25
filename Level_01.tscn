@@ -1,0 +1,110 @@
+[gd_scene load_steps=8 format=3 uid="uid://c1ohbo888hme0"]
+
+[ext_resource type="PackedScene" uid="uid://caofxh6w7jsmb" path="res://resources/Models/TerrainBase.fbx" id="2_ug8ok"]
+[ext_resource type="PackedScene" uid="uid://usga44akkdwq" path="res://resources/Models/Ground_C_10m.fbx" id="3_wd632"]
+[ext_resource type="PackedScene" uid="uid://j4r5cmx4fuxm" path="res://resources/Models/Gound_C_20x_40m.fbx" id="4_512wv"]
+[ext_resource type="Material" uid="uid://exd371p467d8" path="res://resources/Materials/M_Glow_White.tres" id="4_1001i"]
+[ext_resource type="Material" uid="uid://50akfs2cw31s" path="res://resources/Materials/M_Glow_Blue.tres" id="5_244sh"]
+
+[sub_resource type="Environment" id="Environment_6uwbg"]
+background_mode = 1
+background_color = Color(0.0604013, 0.0712167, 0.136135, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.435192, 0.435192, 0.435192, 1)
+ambient_light_energy = 0.05
+ssao_enabled = true
+ssil_enabled = true
+ssil_intensity = 5.0
+sdfgi_read_sky_light = false
+sdfgi_bounce_feedback = 1.36
+sdfgi_cascades = 5
+sdfgi_max_distance = 409.6
+sdfgi_energy = 4.0
+glow_enabled = true
+glow_blend_mode = 0
+fog_enabled = true
+fog_light_color = Color(0.0613568, 0.070573, 0.137318, 1)
+fog_density = 0.02
+fog_sky_affect = 0.0
+adjustment_enabled = true
+
+[sub_resource type="Compositor" id="Compositor_cdn73"]
+
+[node name="Node3D" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00574684, 0, 0.0313234)
+
+[node name="TerrainBase" parent="." instance=ExtResource("2_ug8ok")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05453, 0)
+
+[node name="Ground_C_10m" parent="." instance=ExtResource("3_wd632")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.107, 3.86536, -1.84349)
+
+[node name="Ground_C_10m2" parent="." instance=ExtResource("3_wd632")]
+transform = Transform3D(0.530115, 0, 0, 0, 1, 0, 0, 0, 0.340653, -5.45124, 0.12296, -1.64171)
+
+[node name="Gound_C_20x_40m" parent="." instance=ExtResource("4_512wv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.379773, 3.86536, -16.8101)
+
+[node name="Gound_C_20x_40m2" parent="." instance=ExtResource("4_512wv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.48893, 3.86536, 18.8442)
+
+[node name="CSGSphere3D_Light" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.79345, -3.56718)
+material_override = ExtResource("4_1001i")
+cast_shadow = 0
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CSGSphere3D_Light"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00406075, 0.154488, 0.00100517)
+light_color = Color(1, 1, 0.827451, 1)
+light_energy = 10.0
+shadow_enabled = true
+omni_range = 15.0
+omni_attenuation = 0.247
+
+[node name="CSGSphere3D_Wisp" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.7564, 2.64792, 10.6707)
+material_override = ExtResource("5_244sh")
+cast_shadow = 0
+radius = 0.1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CSGSphere3D_Wisp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0397949, 0.0601921, -0.0603046)
+light_color = Color(0, 0.827064, 0.832683, 1)
+omni_range = 2.189
+
+[node name="CSGSphere3D_Wisp2" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.70664, 6.99515, 15.1787)
+material_override = ExtResource("5_244sh")
+cast_shadow = 0
+radius = 0.1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CSGSphere3D_Wisp2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0397949, 0.0601921, -0.0603046)
+light_color = Color(0, 0.827064, 0.832683, 1)
+omni_range = 2.189
+
+[node name="CSGSphere3D_Wisp3" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.32582, 6.99515, -17.6459)
+material_override = ExtResource("5_244sh")
+cast_shadow = 0
+radius = 0.1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CSGSphere3D_Wisp3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0397949, 0.0601921, -0.0603046)
+light_color = Color(0, 0.827064, 0.832683, 1)
+omni_range = 2.189
+
+[node name="CSGSphere3D_Wisp4" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.7957, 1.94646, 9.22365)
+material_override = ExtResource("5_244sh")
+cast_shadow = 0
+radius = 0.1
+
+[node name="OmniLight3D" type="OmniLight3D" parent="CSGSphere3D_Wisp4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0397949, 0.0601921, -0.0603046)
+light_color = Color(0, 0.827064, 0.832683, 1)
+omni_range = 2.189
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6uwbg")
+compositor = SubResource("Compositor_cdn73")

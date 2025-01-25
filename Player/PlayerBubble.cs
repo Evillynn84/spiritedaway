@@ -3,7 +3,7 @@ using System;
 
 public partial class PlayerBubble : Node3D
 {
-    private void OnBodyEntered(Node3D body)
+	private void OnBodyEntered(Node3D body)
 	{
 		// Is player - setup colliding bubble
 		Player player = (Player)body;
