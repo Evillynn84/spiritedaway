@@ -4,36 +4,60 @@ using System;
 public partial class Player : CharacterBody3D
 {
 	// Movement
+	[ExportCategory("Movement")]
 	[Export]
 	public float _bubbleSpeed = 5.0f;
 	[Export]
 	public float _outSpeed = 3.0f;
+	public float _overridenSpeed = 0;
 	[Export]
 	public float _bubbleJumpVelocity = 10f;
 	[Export]
 	public float _outJumpVelocity = 4.5f;
+	[Export]
+	public float _jumpGravityModified = 1.5f;
+	[Export]
+	public float _fallGravityModified = 1.5f;
 
 	// Rotation
+	[ExportCategory("Rotation and Cam")]
 	[Export]
-	public float _mouseSensitiviy = 0.5f;
+	public float _mouseSensitivity = 0.5f;
 	[Export]
 	public float _rotationVLimit = 50f;
 	[Export]
 	public Node3D _cameraHolder;
+	[Export]
+	public Camera3D _camera;
+	[Export]
+	public RayCast3D _cameraRayCast;
+	[Export]
+	public float _cameraLerpSpeed = 0.2f;
 
 	public float _cameraRotationV = 0;
 
 	// Bubble
+	[ExportCategory("Bubble")]
 	[Export]
 	public PlayerBubble _controlledBubble;
 
 	public PlayerBubble _collidingBubble;
 
-	//--------------------------------------------------
-	// Overrides
-	//--------------------------------------------------
+	// State
+	[ExportCategory("State")]
+	[Export]
+	public int _hp = 1;
 
-	public override void _Process(double delta)
+    //--------------------------------------------------
+    // Overrides
+    //--------------------------------------------------
+
+    public override void _Ready()
+    {
+        base._Ready();
+    }
+
+    public override void _Process(double delta)
 	{
 		base._Process(delta);
 
@@ -56,7 +80,10 @@ public partial class Player : CharacterBody3D
 		// Add the gravity.
 		if (!IsOnFloor())
 		{
-			velocity += GetGravity() * (float)delta;
+			if (velocity.Y > 0)
+				velocity += GetGravity() * (float)delta * _jumpGravityModified;
+			else
+				velocity += GetGravity() * (float)delta * _fallGravityModified;
 		}
 
 		// Handle Jump.
@@ -74,9 +101,7 @@ public partial class Player : CharacterBody3D
 		Vector2 inputDir = Input.GetVector("pl_left", "pl_right", "pl_front", "pl_back");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 
-		float curSpeed = _bubbleSpeed;
-		if (_controlledBubble == null)
-			curSpeed = _outSpeed;
+		float curSpeed = CurrentSpeed();
 
 		if (direction != Vector3.Zero)
 		{
@@ -91,6 +116,9 @@ public partial class Player : CharacterBody3D
 
 		Velocity = velocity;
 		MoveAndSlide();
+
+		// Camera
+		HandleCamera();
 	}
 
 	public override void _Input(InputEvent @event)
@@ -101,13 +129,13 @@ public partial class Player : CharacterBody3D
 		if (mouseEvent != null)
 		{
 			// Horizontal player rotation
-			RotateY(Mathf.DegToRad(-mouseEvent.Relative.X * _mouseSensitiviy));
+			RotateY(Mathf.DegToRad(-mouseEvent.Relative.X * _mouseSensitivity));
 
-			float xRot = Mathf.Clamp(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitiviy), -_mouseSensitiviy, _mouseSensitiviy);
+			float xRot = Mathf.Clamp(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitivity), -_mouseSensitivity, _mouseSensitivity);
 			//_cameraHolder.RotateX(xRot);
 
 			// Vertical camera rotation
-			float changeV = -mouseEvent.Relative.Y * _mouseSensitiviy;
+			float changeV = -mouseEvent.Relative.Y * _mouseSensitivity;
 			float rotationVUpdated = Mathf.RadToDeg(_cameraHolder.Rotation.X) + changeV;
 
 			// Check vertical limit
@@ -122,6 +150,30 @@ public partial class Player : CharacterBody3D
 	//--------------------------------------------------
 	// Methods
 	//--------------------------------------------------
+
+	private float CurrentSpeed()
+	{
+		// Speed overriden from outside
+		if (_overridenSpeed > 0)
+			return _overridenSpeed;
+
+		// Outside of bubble
+		if (_controlledBubble == null)
+			return _outSpeed;
+
+		// In bubble
+		return _bubbleSpeed;
+	}
+
+	public void OverrideSpeed(float speed)
+	{
+		_overridenSpeed = speed;
+	}
+
+	public void ClearOverridenSpeed()
+	{
+		_overridenSpeed = 0;
+	}
 
 	public void SetCollidingBubble(PlayerBubble bubble)
 	{
@@ -145,5 +197,34 @@ public partial class Player : CharacterBody3D
 		_controlledBubble.Reparent(GetTree().Root);
 		//_controlledBubble.Position = Position;
 		_controlledBubble = null;
+	}
+
+	private void HandleCamera()
+	{
+		// Check obstacles
+		if (!_cameraRayCast.IsColliding())
+		{
+			//_camera.Position = _camera.GlobalPosition.Lerp(_cameraRayCast.TargetPosition, _cameraLerpSpeed);
+			//_camera.Position = _cameraRayCast.TargetPosition;
+			Vector3 target = _cameraHolder.GlobalTransform * _cameraRayCast.TargetPosition;
+			//target = target.Rotated(_cameraRayCast.Rotation.);
+			_camera.GlobalPosition = _camera.GlobalPosition.Lerp(target, _cameraLerpSpeed);
+			return;
+		}
+
+		// Move camera
+		_camera.GlobalPosition = _camera.GlobalPosition.Lerp(_cameraRayCast.GetCollisionPoint(), _cameraLerpSpeed);
+	}
+
+	public void SubtractHP(int dmg)
+	{
+		_hp -= dmg;
+		GD.Print(_hp);
+
+		// Die
+		if (_hp <= 0)
+		{
+			this.SetProcess(false);
+		}
 	}
 }
