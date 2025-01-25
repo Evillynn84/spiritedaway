@@ -6,9 +6,11 @@ public partial class Obstacle : Node3D
 	[Export]
 	public int _dmg = 1;
 	[Export]
-	public bool _changeSpeed = false;
+	public bool _changeMovement = false;
 	[Export]
 	public float _movementSpeed = 1;
+	[Export]
+	public float _jumpVelocity = 1;
 
 	private void OnBodyEntered(Node3D body)
 	{
@@ -21,8 +23,11 @@ public partial class Obstacle : Node3D
 				player.SubtractHP(_dmg);
 
 			// Apply speed change
-			if (_changeSpeed)
+			if (_changeMovement)
+			{
 				player.OverrideSpeed(_movementSpeed);
+				player.OverrideJumpVelocity(_jumpVelocity);
+			}
 		}
 	}
 
@@ -33,8 +38,11 @@ public partial class Obstacle : Node3D
 		if (player != null)
 		{
 			// Clear speed
-			if (_changeSpeed)
+			if (_changeMovement)
+			{
 				player.ClearOverridenSpeed();
+				player.ClearOverridenJump();
+			}
 		}
 	}
 }

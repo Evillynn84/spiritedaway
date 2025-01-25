@@ -52,6 +52,5 @@ mesh = SubResource("BoxMesh_oq64r")
 shape = SubResource("BoxShape3D_meqnc")
 
 [node name="Obstacle" parent="." instance=ExtResource("3_2p4fc")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5, -0.81425, 5)
-_dmg = 0
-_changeSpeed = true
+transform = Transform3D(1.97559, 0, 0, 0, 1.97559, 0, 0, 0, 1.97559, 6.43541, -0.659846, 3.43891)
+_changeMovement = true

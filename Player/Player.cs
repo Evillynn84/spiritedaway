@@ -14,6 +14,7 @@ public partial class Player : CharacterBody3D
 	public float _bubbleJumpVelocity = 10f;
 	[Export]
 	public float _outJumpVelocity = 4.5f;
+	public float _overridenJumpVelocity = 0;
 	[Export]
 	public float _jumpGravityModified = 1.5f;
 	[Export]
@@ -87,9 +88,7 @@ public partial class Player : CharacterBody3D
 		}
 
 		// Handle Jump.
-		float jumpVelocity = _bubbleJumpVelocity;
-		if (_controlledBubble == null)
-			jumpVelocity = _outJumpVelocity;
+		float jumpVelocity = CurrentJumpVelocity();
 
 		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
 		{
@@ -151,6 +150,7 @@ public partial class Player : CharacterBody3D
 	// Methods
 	//--------------------------------------------------
 
+	// Speed handling
 	private float CurrentSpeed()
 	{
 		// Speed overriden from outside
@@ -173,6 +173,31 @@ public partial class Player : CharacterBody3D
 	public void ClearOverridenSpeed()
 	{
 		_overridenSpeed = 0;
+	}
+
+	// Jump handling
+	public float CurrentJumpVelocity()
+	{
+		// Jump overriden from outside
+		if (_overridenJumpVelocity > 0)
+			return _overridenJumpVelocity;
+
+		// Outside of bubble
+		if (_controlledBubble == null)
+			return _outJumpVelocity;
+
+		// In bubble
+		return _bubbleJumpVelocity;
+	}
+
+	public void OverrideJumpVelocity(float velocity)
+	{
+		_overridenJumpVelocity = velocity;
+	}
+
+	public void ClearOverridenJump()
+	{
+		_overridenJumpVelocity = 0;
 	}
 
 	public void SetCollidingBubble(PlayerBubble bubble)
@@ -204,16 +229,13 @@ public partial class Player : CharacterBody3D
 		// Check obstacles
 		if (!_cameraRayCast.IsColliding())
 		{
-			//_camera.Position = _camera.GlobalPosition.Lerp(_cameraRayCast.TargetPosition, _cameraLerpSpeed);
-			//_camera.Position = _cameraRayCast.TargetPosition;
 			Vector3 target = _cameraHolder.GlobalTransform * _cameraRayCast.TargetPosition;
-			//target = target.Rotated(_cameraRayCast.Rotation.);
 			_camera.GlobalPosition = _camera.GlobalPosition.Lerp(target, _cameraLerpSpeed);
 			return;
 		}
 
 		// Move camera
-		_camera.GlobalPosition = _camera.GlobalPosition.Lerp(_cameraRayCast.GetCollisionPoint(), _cameraLerpSpeed);
+		_camera.GlobalPosition = _camera.GlobalPosition.Lerp(_cameraRayCast.GetCollisionPoint() * 0.8f, _cameraLerpSpeed);
 	}
 
 	public void SubtractHP(int dmg)
@@ -224,7 +246,9 @@ public partial class Player : CharacterBody3D
 		// Die
 		if (_hp <= 0)
 		{
+			GD.Print("Die");
 			this.SetProcess(false);
+			GameState.GetInstance().RestartLevel();
 		}
 	}
 }
