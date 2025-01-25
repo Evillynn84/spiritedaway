@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bfjrvu35ypljc"]
+[gd_scene load_steps=8 format=3 uid="uid://bfjrvu35ypljc"]
 
 [ext_resource type="PackedScene" uid="uid://lrhm5qe4pd44" path="res://Player/Player.tscn" id="1_nbu68"]
 [ext_resource type="PackedScene" uid="uid://rnscx2wflgbn" path="res://Player/PlayerBubble.tscn" id="2_nyprr"]
+[ext_resource type="PackedScene" uid="uid://o1yu7ydbev14" path="res://Obstacles/GenericObstacle.tscn" id="3_2p4fc"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_34hwk"]
 
@@ -49,3 +50,8 @@ mesh = SubResource("BoxMesh_oq64r")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/Area3D"]
 shape = SubResource("BoxShape3D_meqnc")
+
+[node name="Obstacle" parent="." instance=ExtResource("3_2p4fc")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5, -0.81425, 5)
+_dmg = 0
+_changeSpeed = true

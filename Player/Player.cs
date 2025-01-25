@@ -9,6 +9,7 @@ public partial class Player : CharacterBody3D
 	public float _bubbleSpeed = 5.0f;
 	[Export]
 	public float _outSpeed = 3.0f;
+	public float _overridenSpeed = 0;
 	[Export]
 	public float _bubbleJumpVelocity = 10f;
 	[Export]
@@ -42,9 +43,19 @@ public partial class Player : CharacterBody3D
 
 	public PlayerBubble _collidingBubble;
 
+	// State
+	[ExportCategory("State")]
+	[Export]
+	public int _hp = 1;
+
     //--------------------------------------------------
     // Overrides
     //--------------------------------------------------
+
+    public override void _Ready()
+    {
+        base._Ready();
+    }
 
     public override void _Process(double delta)
 	{
@@ -90,9 +101,7 @@ public partial class Player : CharacterBody3D
 		Vector2 inputDir = Input.GetVector("pl_left", "pl_right", "pl_front", "pl_back");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
 
-		float curSpeed = _bubbleSpeed;
-		if (_controlledBubble == null)
-			curSpeed = _outSpeed;
+		float curSpeed = CurrentSpeed();
 
 		if (direction != Vector3.Zero)
 		{
@@ -142,6 +151,30 @@ public partial class Player : CharacterBody3D
 	// Methods
 	//--------------------------------------------------
 
+	private float CurrentSpeed()
+	{
+		// Speed overriden from outside
+		if (_overridenSpeed > 0)
+			return _overridenSpeed;
+
+		// Outside of bubble
+		if (_controlledBubble == null)
+			return _outSpeed;
+
+		// In bubble
+		return _bubbleSpeed;
+	}
+
+	public void OverrideSpeed(float speed)
+	{
+		_overridenSpeed = speed;
+	}
+
+	public void ClearOverridenSpeed()
+	{
+		_overridenSpeed = 0;
+	}
+
 	public void SetCollidingBubble(PlayerBubble bubble)
 	{
 		_collidingBubble = bubble;
@@ -181,5 +214,17 @@ public partial class Player : CharacterBody3D
 
 		// Move camera
 		_camera.GlobalPosition = _camera.GlobalPosition.Lerp(_cameraRayCast.GetCollisionPoint(), _cameraLerpSpeed);
+	}
+
+	public void SubtractHP(int dmg)
+	{
+		_hp -= dmg;
+		GD.Print(_hp);
+
+		// Die
+		if (_hp <= 0)
+		{
+			this.SetProcess(false);
+		}
 	}
 }
