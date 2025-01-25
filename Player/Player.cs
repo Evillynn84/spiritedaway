@@ -4,6 +4,7 @@ using System;
 public partial class Player : CharacterBody3D
 {
 	// Movement
+	[ExportCategory("Movement")]
 	[Export]
 	public float _bubbleSpeed = 5.0f;
 	[Export]
@@ -12,28 +13,40 @@ public partial class Player : CharacterBody3D
 	public float _bubbleJumpVelocity = 10f;
 	[Export]
 	public float _outJumpVelocity = 4.5f;
+	[Export]
+	public float _jumpGravityModified = 1.5f;
+	[Export]
+	public float _fallGravityModified = 1.5f;
 
 	// Rotation
+	[ExportCategory("Rotation and Cam")]
 	[Export]
-	public float _mouseSensitiviy = 0.5f;
+	public float _mouseSensitivity = 0.5f;
 	[Export]
 	public float _rotationVLimit = 50f;
 	[Export]
 	public Node3D _cameraHolder;
+	[Export]
+	public Camera3D _camera;
+	[Export]
+	public RayCast3D _cameraRayCast;
+	[Export]
+	public float _cameraLerpSpeed = 0.2f;
 
 	public float _cameraRotationV = 0;
 
 	// Bubble
+	[ExportCategory("Bubble")]
 	[Export]
 	public PlayerBubble _controlledBubble;
 
 	public PlayerBubble _collidingBubble;
 
-	//--------------------------------------------------
-	// Overrides
-	//--------------------------------------------------
+    //--------------------------------------------------
+    // Overrides
+    //--------------------------------------------------
 
-	public override void _Process(double delta)
+    public override void _Process(double delta)
 	{
 		base._Process(delta);
 
@@ -56,7 +69,10 @@ public partial class Player : CharacterBody3D
 		// Add the gravity.
 		if (!IsOnFloor())
 		{
-			velocity += GetGravity() * (float)delta;
+			if (velocity.Y > 0)
+				velocity += GetGravity() * (float)delta * _jumpGravityModified;
+			else
+				velocity += GetGravity() * (float)delta * _fallGravityModified;
 		}
 
 		// Handle Jump.
@@ -91,6 +107,9 @@ public partial class Player : CharacterBody3D
 
 		Velocity = velocity;
 		MoveAndSlide();
+
+		// Camera
+		HandleCamera();
 	}
 
 	public override void _Input(InputEvent @event)
@@ -101,13 +120,13 @@ public partial class Player : CharacterBody3D
 		if (mouseEvent != null)
 		{
 			// Horizontal player rotation
-			RotateY(Mathf.DegToRad(-mouseEvent.Relative.X * _mouseSensitiviy));
+			RotateY(Mathf.DegToRad(-mouseEvent.Relative.X * _mouseSensitivity));
 
-			float xRot = Mathf.Clamp(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitiviy), -_mouseSensitiviy, _mouseSensitiviy);
+			float xRot = Mathf.Clamp(Mathf.DegToRad(-mouseEvent.Relative.Y * _mouseSensitivity), -_mouseSensitivity, _mouseSensitivity);
 			//_cameraHolder.RotateX(xRot);
 
 			// Vertical camera rotation
-			float changeV = -mouseEvent.Relative.Y * _mouseSensitiviy;
+			float changeV = -mouseEvent.Relative.Y * _mouseSensitivity;
 			float rotationVUpdated = Mathf.RadToDeg(_cameraHolder.Rotation.X) + changeV;
 
 			// Check vertical limit
@@ -145,5 +164,22 @@ public partial class Player : CharacterBody3D
 		_controlledBubble.Reparent(GetTree().Root);
 		//_controlledBubble.Position = Position;
 		_controlledBubble = null;
+	}
+
+	private void HandleCamera()
+	{
+		// Check obstacles
+		if (!_cameraRayCast.IsColliding())
+		{
+			//_camera.Position = _camera.GlobalPosition.Lerp(_cameraRayCast.TargetPosition, _cameraLerpSpeed);
+			//_camera.Position = _cameraRayCast.TargetPosition;
+			Vector3 target = _cameraHolder.GlobalTransform * _cameraRayCast.TargetPosition;
+			//target = target.Rotated(_cameraRayCast.Rotation.);
+			_camera.GlobalPosition = _camera.GlobalPosition.Lerp(target, _cameraLerpSpeed);
+			return;
+		}
+
+		// Move camera
+		_camera.GlobalPosition = _camera.GlobalPosition.Lerp(_cameraRayCast.GetCollisionPoint(), _cameraLerpSpeed);
 	}
 }
